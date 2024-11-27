@@ -21,7 +21,7 @@ if (is.numeric(df$report_date)) {
 
 # Define the UI for the Shiny app
 ui <- fluidPage(
-  # Custom CSS for linear gradient background and added space
+  # Custom CSS for background image and added space
   tags$head(
     tags$style(
       HTML("
@@ -71,7 +71,7 @@ ui <- fluidPage(
         choices = c("All", unique(df$location_name)),
         selected = "All"
       ),
-      actionButton("apply_filter", "Apply Filter", class = "btn btn-primary"),
+      actionButton("apply_filter", "Reset Filter", class = "btn btn-primary"),
 
       # Slider to select date range
       sliderInput(
@@ -239,6 +239,15 @@ server <- function(input, output, session) {
 
     fig
   })
+
+  # Reset filter action (resets sliders to their default position)
+  observeEvent(input$apply_filter, {
+    updateSliderInput(session, "date_range",
+                      value = c(min(df$report_date), max(df$report_date)))  # Reset to default date range
+
+    updateSelectInput(session, "location_filter", selected = "All")  # Reset location filter
+  })
+
 }
 
 # Create and run the Shiny app
